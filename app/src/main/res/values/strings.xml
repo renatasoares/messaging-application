@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Messaging Application</string>
+    <string name="send_button_label"> Send </string>
+    <string name="sign_out">Logout</string>
+</resources>
