@@ -5,14 +5,18 @@ public class AppMessage {
     private String bodyMessage;
     private String username;
     private String photoUrl;
+    private String videoUrl;
+    private String audioUrl;
 
     public AppMessage() {
     }
 
-    public AppMessage(String bodyMessage, String username, String photoUrl) {
+    public AppMessage(String bodyMessage, String username, String photoUrl, String videoUrl, String audioUrl) {
         this.bodyMessage = bodyMessage;
         this.username = username;
         this.photoUrl = photoUrl;
+        this.videoUrl = videoUrl;
+        this.audioUrl = audioUrl;
     }
 
     public String getBodyMessage() {
