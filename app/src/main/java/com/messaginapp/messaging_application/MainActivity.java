@@ -37,6 +37,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import  com.messaginapp.messaging_application.OrbotHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         username = ANONYMOUS;
@@ -138,10 +140,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                if(firebaseUser != null){
+                if (firebaseUser != null) {
                     Toast.makeText(MainActivity.this, "Welcome, " + firebaseUser.getDisplayName() + "!", Toast.LENGTH_SHORT).show();
                     onSignedIn(firebaseUser.getDisplayName());
-                }else{
+                } else {
                     onSignedOut();
                     startActivityForResult(
                             AuthUI.getInstance()
