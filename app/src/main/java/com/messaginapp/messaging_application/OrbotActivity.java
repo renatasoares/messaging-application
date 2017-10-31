@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,12 +21,19 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class OrbotActivity extends AppCompatActivity {
 
     private Button orbotButton;
     private boolean orbotInstalled;
     private ProgressBar progressBar;
+    private TextView txtConfig;
+    private TextView txtCategoria;
+    private TextView txtIntro1;
+    private TextView txtIntro2;
+    private TextView txtIntro3;
+
     private static final String appPackageName = "org.torproject.android";
 
     @Override
@@ -37,6 +45,18 @@ public class OrbotActivity extends AppCompatActivity {
 
         orbotButton = (Button) findViewById(R.id.orbotButton);
 
+        progressBar = (ProgressBar) findViewById(R.id.orbotProgressBar);
+        progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+        txtCategoria = (TextView) findViewById(R.id.txtCategoria);
+        txtIntro1 = (TextView) findViewById(R.id.txtIntro1);
+        txtIntro2 = (TextView) findViewById(R.id.txtIntro2);
+        txtIntro3 = (TextView) findViewById(R.id.txtIntro3);
+
+        txtConfig = (TextView) findViewById(R.id.txtConfig);
+        txtConfig.setVisibility(TextView.INVISIBLE);
+
+
         OrbotHelper orbotHelper = new OrbotHelper();
 
 
@@ -44,7 +64,16 @@ public class OrbotActivity extends AppCompatActivity {
 
 
         if(orbotInstalled) {
-            progressBar = (ProgressBar) findViewById(R.id.orbotProgressBar);
+
+            txtConfig.setVisibility(TextView.VISIBLE);
+            txtCategoria.setVisibility(TextView.INVISIBLE);
+            txtIntro1.setVisibility(TextView.INVISIBLE);
+            txtIntro2.setVisibility(TextView.INVISIBLE);
+            txtIntro3.setVisibility(TextView.INVISIBLE);
+
+            orbotButton.setVisibility(Button.INVISIBLE);
+
+            progressBar.setVisibility(ProgressBar.VISIBLE);
 
             final String url = "https://check.torproject.org/api/ip";
 

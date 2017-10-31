@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application.Helpers;
+package com.messaginapp.messaging_application;
 
 import android.app.Activity;
 import android.content.Context;

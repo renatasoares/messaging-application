@@ -9,6 +9,19 @@
     android:paddingRight="16dp"
     android:paddingTop="16dp">
 
+    <TextView
+        android:id="@+id/txtConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:text="Oba! Você já instalou o Orbot! Aguarde..."
+        android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
+        android:layout_above="@+id/orbotProgressBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
     <ProgressBar
         android:id="@+id/orbotProgressBar"
         style="?android:attr/progressBarStyleLarge"
