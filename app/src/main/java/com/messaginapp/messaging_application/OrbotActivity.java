@@ -1,5 +1,8 @@
 package com.messaginapp.messaging_application;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,15 +12,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
-import static com.messaginapp.messaging_application.OrbotHelper.isOrbotRunning;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class OrbotActivity extends AppCompatActivity {
 
     private Button orbotButton;
     private boolean orbotInstalled;
+    private ProgressBar progressBar;
     private static final String appPackageName = "org.torproject.android";
 
     @Override
@@ -29,23 +37,50 @@ public class OrbotActivity extends AppCompatActivity {
 
         orbotButton = (Button) findViewById(R.id.orbotButton);
 
-        orbotInstalled = OrbotHelper.isAppInstalled(OrbotActivity.this, appPackageName);
+        OrbotHelper orbotHelper = new OrbotHelper();
+
+
+        orbotInstalled = orbotHelper.isAppInstalled(OrbotActivity.this, appPackageName);
+
 
         if(orbotInstalled) {
-            boolean started = isOrbotRunning(activityManager);
-            Log.d("Ola", "" + started);
-            if (started) {
-                Intent intent = new Intent(OrbotActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Intent i = new Intent();
-                PackageManager managerclock = getPackageManager();
-                i = managerclock.getLaunchIntentForPackage(appPackageName);
-                i.addCategory(Intent.CATEGORY_LAUNCHER);
-                startActivity(i);
-                finish();
-            }
+            progressBar = (ProgressBar) findViewById(R.id.orbotProgressBar);
+
+            final String url = "https://check.torproject.org/api/ip";
+
+            final RequestQueue queue = Volley.newRequestQueue(this);
+            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public synchronized void onResponse(JSONObject response){
+                            try {
+                                if(response.getBoolean("IsTor")){
+                                    Intent intent = new Intent(OrbotActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else{
+                                    Intent i = new Intent();
+                                    PackageManager managerclock = getPackageManager();
+                                    i = managerclock.getLaunchIntentForPackage(appPackageName);
+                                    i.addCategory(Intent.CATEGORY_LAUNCHER);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            }catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Error.Response", error.toString());
+                        }
+                    }
+            );
+            queue.add(getRequest);
         }
 
         orbotButton.setOnClickListener(new View.OnClickListener() {

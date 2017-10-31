@@ -1,16 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.messaginapp.messaging_application.OrbotActivity">
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
-    <Button
-        android:id="@+id/orbotButton"
+    <ProgressBar
+        android:id="@+id/orbotProgressBar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="@string/orbot_button_label"/>
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingLeft="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="32dp"
+        android:layout_marginEnd="32dp">
+
+        <TextView
+            android:id="@+id/txtCategoria"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/orbotButton"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:textSize="@dimen/cast_libraries_material_featurehighlight_text_header_size"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHighlight="@color/colorPrimary"
+            android:text="Olá! Seja bem-vindo(a)!" />
+
+        <TextView
+            android:id="@+id/txtIntro1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/orbotButton"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Este é um aplicativo de mensagens focado em garantir a sua privacidade!"/>
+
+        <TextView
+            android:id="@+id/txtIntro2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
+            android:layout_above="@+id/orbotButton"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Utilizamos uma integração com o aplicativo Orbot para a sua anonimização na rede."/>
+
+        <TextView
+            android:id="@+id/txtIntro3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
+            android:layout_above="@+id/orbotButton"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Para começar, clique no botão abaixo."/>
+
+        <Button
+            android:id="@+id/orbotButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/orbot_integration" />
+
+    </LinearLayout>
+
+</RelativeLayout>

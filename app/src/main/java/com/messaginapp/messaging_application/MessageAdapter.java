@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.Helpers;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class MessageAdapter extends ArrayAdapter<AppMessage> {
+public class MessageAdapter extends ArrayAdapter<com.messaginapp.messaging_application.AppMessage> {
 
     public MessageAdapter(Context context, int resource, List<AppMessage> objects) {
         super(context, resource, objects);
