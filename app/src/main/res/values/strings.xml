@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Messaging Application</string>
     <string name="send_button_label"> Send </string>
+    <string name="text_config_1">Oba! Você já instalou o Orbot! Aguarde...</string>
+    <string name="text_config_2">Olá! Seja bem-vindo(a)!</string>
+    <string name="text_config_3">Este é um aplicativo de mensagens focado em garantir a sua privacidade!</string>
+    <string name="text_config_4">Utilizamos uma integração com o aplicativo Orbot para a sua anonimização na rede.</string>
+    <string name="text_config_5">Para começar, clique no botão abaixo.</string>
     <string name="orbot_button_label"> Start Application With Orbot </string>
     <string name="sign_out">Logout</string>
     <string name="facebook_application_id" translatable="false">123619871677752</string>

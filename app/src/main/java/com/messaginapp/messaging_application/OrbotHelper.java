@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 public class OrbotHelper {
-    private static final String appPackageName = "org.torproject.android";
 
     public boolean isAppInstalled(Context context, String packageName) {
         try {

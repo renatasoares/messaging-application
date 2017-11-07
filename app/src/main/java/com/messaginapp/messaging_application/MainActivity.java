@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == RC_SIGN_IN){
-            Log.d("DEURUIM", "" + resultCode + "    " + requestCode);
             if(resultCode == RESULT_OK){
                 Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
             }else if(resultCode == RESULT_CANCELED){
@@ -182,8 +181,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }else if(requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedMediaUri = data.getData();
-
-            Log.d("DEURUIM", selectedMediaUri.toString());
 
             if (selectedMediaUri.toString().contains("image")) {
                 StorageReference photoReference = photosStorageReference.child(selectedMediaUri.getLastPathSegment());

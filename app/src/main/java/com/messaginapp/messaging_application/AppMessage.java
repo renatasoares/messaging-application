@@ -23,7 +23,7 @@ public class AppMessage {
         return bodyMessage;
     }
 
-    public void setBodyMessage(String bodyMessage) {
+    private void setBodyMessage(String bodyMessage) {
         this.bodyMessage = bodyMessage;
     }
 
@@ -31,7 +31,7 @@ public class AppMessage {
         return username;
     }
 
-    public void setUsername(String username) {
+    private void setUsername(String username) {
         this.username = username;
     }
 
@@ -39,7 +39,7 @@ public class AppMessage {
         return photoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
+    private void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
 }
