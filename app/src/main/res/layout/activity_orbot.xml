@@ -16,7 +16,7 @@
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
         android:gravity="center"
-        android:text="Oba! Você já instalou o Orbot! Aguarde..."
+        android:text= "@string/text_config_1"
         android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
         android:layout_above="@+id/orbotProgressBar"
         android:layout_alignParentRight="true"
@@ -52,7 +52,7 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimaryDark"
             android:textColorHighlight="@color/colorPrimary"
-            android:text="Olá! Seja bem-vindo(a)!" />
+            android:text="@string/text_config_2" />
 
         <TextView
             android:id="@+id/txtIntro1"
@@ -64,7 +64,7 @@
             android:textSize="@dimen/cast_tracks_chooser_dialog_no_message_text_size"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Este é um aplicativo de mensagens focado em garantir a sua privacidade!"/>
+            android:text="@string/text_config_3"/>
 
         <TextView
             android:id="@+id/txtIntro2"
@@ -75,7 +75,7 @@
             android:layout_above="@+id/orbotButton"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Utilizamos uma integração com o aplicativo Orbot para a sua anonimização na rede."/>
+            android:text="@string/text_config_4"/>
 
         <TextView
             android:id="@+id/txtIntro3"
@@ -86,7 +86,7 @@
             android:layout_above="@+id/orbotButton"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="Para começar, clique no botão abaixo."/>
+            android:text="@string/text_config_5"/>
 
         <Button
             android:id="@+id/orbotButton"
