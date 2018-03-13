@@ -8,6 +8,13 @@
     <string name="text_config_5">Para começar, clique no botão abaixo.</string>
     <string name="orbot_button_label"> Start Application With Orbot </string>
     <string name="sign_out">Logout</string>
+    <string name="profile">My Profile</string>
     <string name="facebook_application_id" translatable="false">123619871677752</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb123619871677752</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

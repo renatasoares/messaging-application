@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.messaginapp.messaging_application.ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingTop="30dp">
+
+        <ImageView
+            android:id="@+id/usernameIcon"
+            android:layout_width="24dp"
+            android:src="@drawable/account"
+            android:layout_height="40dp"
+            android:paddingTop="1dp" />
+
+        <TextView
+            android:id="@+id/usernameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="3dp"
+            android:paddingLeft="10dp"
+            android:text="Username"
+            android:paddingRight="3dp"
+            android:paddingTop="2dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="26sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingTop="90dp">
+
+        <EditText
+            android:id="@+id/editUsernameField"
+            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:inputType="text"/>
+
+        <Button
+            android:id="@+id/editUsername"
+            android:layout_width="24dp"
+            android:background="@drawable/edit_icon"
+            android:layout_height="40dp"
+            android:paddingTop="1dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingTop="150dp">
+
+        <ImageView
+            android:id="@+id/secretIcon"
+            android:layout_width="24dp"
+            android:src="@drawable/secret_icon"
+            android:layout_height="40dp"
+            android:paddingTop="1dp" />
+
+        <TextView
+            android:id="@+id/qrCodeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="3dp"
+            android:paddingLeft="10dp"
+            android:text="Identifier"
+            android:paddingRight="3dp"
+            android:paddingTop="2dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="26sp"/>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/timerQrCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingTop="2dp"
+            android:text="00:00"
+            android:textColor="@color/colorPrimary"
+            android:textSize="26sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:paddingTop="250dp">
+
+        <ImageView
+            android:id="@+id/qrCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>

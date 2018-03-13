@@ -37,6 +37,7 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import  com.messaginapp.messaging_application.OrbotHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -212,6 +213,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.profile_menu:
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 return true;

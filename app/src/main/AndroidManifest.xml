@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <uses-permission android:name="android.permission.INTERNET" />
 
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".OrbotActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>
