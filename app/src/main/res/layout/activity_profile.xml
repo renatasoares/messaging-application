@@ -120,4 +120,20 @@
     </RelativeLayout>
 
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="280dp"
+        android:paddingTop="450dp">
+
+        <Button
+            android:id="@+id/newChatButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/begin_chat" />
+
+    </LinearLayout>
+
+
 </android.support.constraint.ConstraintLayout>

@@ -16,9 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.UUID;
 
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.google.firebase.database.ValueEventListener;
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -30,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private ImageView imageView;
+    DynamoDBMapper dynamoDBMapper;
     private EditText editText;
     private TextView textView;
     private Button button;
@@ -50,11 +64,21 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
+        this.dynamoDBMapper = DynamoDBMapper.builder()
+                .dynamoDBClient(dynamoDBClient)
+                .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                .build();
+
         textView = (TextView) findViewById(R.id.timerQrCode);
         editText = (EditText) findViewById(R.id.editUsernameField);
         button = (Button) findViewById(R.id.editUsername);
 
-        editText.setText(getUsername(),TextView.BufferType.EDITABLE);
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseAuth.getCurrentUser().reload();
+
+        editText.setText(firebaseAuth.getCurrentUser().getDisplayName(),TextView.BufferType.EDITABLE);
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -87,7 +111,22 @@ public class ProfileActivity extends AppCompatActivity {
     public void generateQrCode(){
         imageView = (ImageView) findViewById(R.id.qrCode);
 
+        String idUser = firebaseAuth.getCurrentUser().getUid();
         String code = UUID.randomUUID().toString();
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC-3"));
+        cal.add(Calendar.MINUTE, 1);
+        long ttl = cal.getTimeInMillis() / 1000L;
+
+        final TokenDO token = new TokenDO(idUser, ttl, code);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                dynamoDBMapper.save(token);
+            }
+        }).start();
+
 
         QRCodeWriter writer = new QRCodeWriter();
         try {
