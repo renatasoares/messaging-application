@@ -5,7 +5,6 @@ android {
     buildToolsVersion "26.0.1"
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.messaginapp.messaging_application"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
@@ -18,6 +17,7 @@ android {
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false

@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.model;
 
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBAttribute;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBHashKey;

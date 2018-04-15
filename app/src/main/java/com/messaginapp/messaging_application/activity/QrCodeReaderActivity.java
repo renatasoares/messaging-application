@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.activity;
 
 import android.*;
 import android.Manifest;
@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import com.messaginapp.messaging_application.R;
 
 import com.google.zxing.Result;
 

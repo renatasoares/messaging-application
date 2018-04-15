@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.activity;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.messaginapp.messaging_application.R;
+import com.messaginapp.messaging_application.controller.OrbotHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,6 +79,7 @@ public class OrbotActivity extends AppCompatActivity {
 
             final String url = "https://check.torproject.org/api/ip";
 
+            Log.d("Orbot", "vem aqui");
             final RequestQueue queue = Volley.newRequestQueue(this);
             JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>()
@@ -84,6 +87,7 @@ public class OrbotActivity extends AppCompatActivity {
                         @Override
                         public synchronized void onResponse(JSONObject response){
                             try {
+                                Log.d("Orbot", response.getBoolean("IsTor") + "");
                                 if(response.getBoolean("IsTor")){
                                     Intent intent = new Intent(OrbotActivity.this, MainActivity.class);
                                     startActivity(intent);

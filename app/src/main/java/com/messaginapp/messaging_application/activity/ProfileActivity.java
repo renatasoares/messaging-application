@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.activity;
 
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -36,6 +36,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.messaginapp.messaging_application.R;
+import com.messaginapp.messaging_application.model.TokenDO;
 
 import org.w3c.dom.Text;
 
@@ -63,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        AWSMobileClient.getInstance().initialize(this).execute();
 
         AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(AWSMobileClient.getInstance().getCredentialsProvider());
         this.dynamoDBMapper = DynamoDBMapper.builder()

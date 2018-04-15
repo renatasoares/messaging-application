@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.controller;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.controller;
 
 public final class StringFormatUtils {
 
