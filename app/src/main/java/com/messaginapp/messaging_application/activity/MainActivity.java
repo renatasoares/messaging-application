@@ -248,11 +248,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 return true;
-            case R.id.qrcodeMenu:
-                Intent intentQrCode = new Intent(MainActivity.this, QrCodeReaderActivity.class);
-                startActivity(intentQrCode);
-                finish();
-                return true;
             case R.id.sign_out_menu:
                 AuthUI.getInstance().signOut(this);
                 return true;

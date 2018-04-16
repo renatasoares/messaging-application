@@ -2,6 +2,8 @@ package com.messaginapp.messaging_application.model;
 
 public class AppMessage {
 
+    private String uidSender;
+    private String uidReceiver;
     private String bodyMessage;
     private String username;
     private String photoUrl;

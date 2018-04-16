@@ -1,6 +1,7 @@
 package com.messaginapp.messaging_application.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.CountDownTimer;
@@ -48,7 +49,8 @@ public class ProfileActivity extends AppCompatActivity {
     DynamoDBMapper dynamoDBMapper;
     private EditText editText;
     private TextView textView;
-    private Button button;
+    private Button buttonNameChat;
+    private Button buttonNewChat;
     private String username = "ANONYMOUS";
 
 
@@ -75,7 +77,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         textView = (TextView) findViewById(R.id.timerQrCode);
         editText = (EditText) findViewById(R.id.editUsernameField);
-        button = (Button) findViewById(R.id.editUsername);
+        buttonNameChat = (Button) findViewById(R.id.editUsername);
+        buttonNewChat = (Button) findViewById(R.id.newChatButton);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -83,11 +86,19 @@ public class ProfileActivity extends AppCompatActivity {
 
         editText.setText(firebaseAuth.getCurrentUser().getDisplayName(),TextView.BufferType.EDITABLE);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        buttonNameChat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 setUsername(editText.getText().toString());
                 editText.setText(getUsername(),TextView.BufferType.EDITABLE);
                 Toast.makeText(ProfileActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        buttonNewChat.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intentQrCode = new Intent(ProfileActivity.this, QrCodeReaderActivity.class);
+                startActivity(intentQrCode);
+                finish();
             }
         });
 

@@ -44,6 +44,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.26.0'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-lambda:2.2.+'
+    //compile group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.11.313'
     compile 'com.android.support:appcompat-v7:26.0.1'
     compile 'com.android.support:design:26.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'

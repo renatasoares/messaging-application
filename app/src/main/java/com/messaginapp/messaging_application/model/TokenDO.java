@@ -14,10 +14,9 @@ import java.util.Set;
 @DynamoDBTable(tableName = "appmessaging-mobilehub-742744033-token")
 
 public class TokenDO {
-    private String _userId;
-    private Long _tTL;
     private String _qrCode;
-
+    private Long _tTL;
+    private String _userId;
 
     public TokenDO(String _userId, Long _tTL, String _qrCode) {
         this._userId = _userId;
@@ -25,15 +24,14 @@ public class TokenDO {
         this._qrCode = _qrCode;
     }
 
-
-    @DynamoDBHashKey(attributeName = "userId")
-    @DynamoDBAttribute(attributeName = "userId")
-    public String getUserId() {
-        return _userId;
+    @DynamoDBHashKey(attributeName = "qrCode")
+    @DynamoDBAttribute(attributeName = "qrCode")
+    public String getQrCode() {
+        return _qrCode;
     }
 
-    public void setUserId(final String _userId) {
-        this._userId = _userId;
+    public void setQrCode(final String _qrCode) {
+        this._qrCode = _qrCode;
     }
     @DynamoDBAttribute(attributeName = "TTL")
     public Long getTTL() {
@@ -43,13 +41,14 @@ public class TokenDO {
     public void setTTL(final Long _tTL) {
         this._tTL = _tTL;
     }
-    @DynamoDBAttribute(attributeName = "qrCode")
-    public String getQrCode() {
-        return _qrCode;
+    @DynamoDBAttribute(attributeName = "userId")
+    public String getUserId() {
+        return _userId;
     }
 
-    public void setQrCode(final String _qrCode) {
-        this._qrCode = _qrCode;
+    public void setUserId(final String _userId) {
+        this._userId = _userId;
     }
 
 }
+
