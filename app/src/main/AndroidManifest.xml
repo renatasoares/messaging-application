@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -19,7 +19,6 @@
         android:name="com.google.firebase.messaging.default_notification_color"
         android:resource="@color/colorPrimary" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,18 +26,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <service
-            android:name=".service.NotificationService">
+        <service android:name=".service.NotificationService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service
-            android:name=".service.NotificationInstanceService">
+        <service android:name=".service.NotificationInstanceService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
@@ -51,7 +46,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.ProfileActivity" />
-        <activity android:name=".activity.QrCodeReaderActivity"></activity>
+        <activity android:name=".activity.QrCodeReaderActivity" />
+        <activity android:name=".activity.AcceptionActivity"></activity>
     </application>
 
 </manifest>

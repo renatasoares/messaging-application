@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.content.ClipData;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.AsyncTask;
@@ -120,7 +121,18 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
             }
 
             Log.d("RENATAS", result.toString());
-
+            if(result.toString() == "{}" || result == null){
+                Intent intentAcception = new Intent(QrCodeReaderActivity.this, AcceptionActivity.class);
+                intentAcception.putExtra("result", result);
+                startActivity(intentAcception);
+                finish();
+            }else{
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(QrCodeReaderActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
             return result.toString();
         }
 

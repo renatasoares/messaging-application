@@ -79,7 +79,6 @@ public class OrbotActivity extends AppCompatActivity {
 
             final String url = "https://check.torproject.org/api/ip";
 
-            Log.d("Orbot", "vem aqui");
             final RequestQueue queue = Volley.newRequestQueue(this);
             JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>()
@@ -87,7 +86,6 @@ public class OrbotActivity extends AppCompatActivity {
                         @Override
                         public synchronized void onResponse(JSONObject response){
                             try {
-                                Log.d("Orbot", response.getBoolean("IsTor") + "");
                                 if(response.getBoolean("IsTor")){
                                     Intent intent = new Intent(OrbotActivity.this, MainActivity.class);
                                     startActivity(intent);
