@@ -86,9 +86,12 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
     @Override
     public void handleResult(Result rawResult) {
 
-        new GetUser().execute(rawResult.getText());
+        if(!rawResult.getText().isEmpty()) {
+            new GetUser().execute(rawResult.getText());
+        }else{
+            Toast.makeText(QrCodeReaderActivity.this, "QRCode vazio!", Toast.LENGTH_SHORT).show();
+        }
 
-        //I don't know why this is the case but I don't have the time to figure out.
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -120,7 +123,6 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
 
             }
 
-            Log.d("RENATAS", result.toString());
             if(result.toString() == "{}" || result == null){
                 Intent intentAcception = new Intent(QrCodeReaderActivity.this, AcceptionActivity.class);
                 intentAcception.putExtra("result", result);
