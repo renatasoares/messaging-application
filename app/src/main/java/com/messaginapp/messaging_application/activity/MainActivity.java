@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.messaginapp.messaging_application.controller.MessageAdapter;
+import com.messaginapp.messaging_application.model.Acception;
 import com.messaginapp.messaging_application.model.AppMessage;
 
 public class MainActivity extends AppCompatActivity {
@@ -246,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.profile_menu:
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
+                finish();
+                return true;
+            case R.id.acception_menu:
+                Intent acceptionIntent = new Intent(MainActivity.this, AcceptionActivity.class);
+                startActivity(acceptionIntent);
                 finish();
                 return true;
             case R.id.sign_out_menu:

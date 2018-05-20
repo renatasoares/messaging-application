@@ -97,10 +97,12 @@ public class ProfileActivity extends AppCompatActivity {
         buttonNewChat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intentQrCode = new Intent(ProfileActivity.this, QrCodeReaderActivity.class);
+                intentQrCode.putExtra("idSender", editText.getText().toString());
                 startActivity(intentQrCode);
                 finish();
             }
         });
+
 
 
         CountDownTimer cdt = new CountDownTimer(60000,1000) {

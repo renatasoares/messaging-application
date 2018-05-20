@@ -44,6 +44,7 @@ import static me.dm7.barcodescanner.core.CameraUtils.getCameraInstance;
 public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
+    private String idSender;
     DynamoDBMapper dynamoDBMapper;
 
 
@@ -56,6 +57,8 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
         mScannerView = new ZXingScannerView(this);
         contentFrame.addView(mScannerView);
 
+        Intent intent = getIntent();
+        idSender = intent.getStringExtra("idSender");
     }
 
     public void startCamera()
@@ -119,21 +122,20 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
             try {
                 result = dynamoDBClient.getItem("appmessaging-mobilehub-742744033-token", identifier);
             } catch (AmazonServiceException e) {
-                Log.d("RENATA", e.getErrorMessage());
-
+                Log.d("AWS", e.getErrorMessage());
             }
 
             if(result.toString() == "{}" || result == null){
-                Intent intentAcception = new Intent(QrCodeReaderActivity.this, AcceptionActivity.class);
-                intentAcception.putExtra("result", result);
-                startActivity(intentAcception);
-                finish();
-            }else{
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(QrCodeReaderActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }else{
+                Intent intentAcception = new Intent(QrCodeReaderActivity.this, AcceptionActivity.class);
+                intentAcception.putExtra("idSender", idSender);
+                startActivity(intentAcception);
+                finish();
             }
             return result.toString();
         }
