@@ -1,15 +1,19 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.activity;
 
+import android.*;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,8 +24,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import com.messaginapp.messaging_application.R;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.BuildConfig;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,7 +44,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import  com.messaginapp.messaging_application.OrbotHelper;
+import com.messaginapp.messaging_application.controller.MessageAdapter;
+import com.messaginapp.messaging_application.model.Acception;
+import com.messaginapp.messaging_application.model.AppMessage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference photosStorageReference;
     private StorageReference videosStorageReference;
 
+    private static final int PERMISSION_REQUEST_CAMERA = 3;
+
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -69,9 +79,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int RC_PHOTO_PICKER = 2;
 
+    private static final int REQUEST_CAMERA = 5;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!haveCameraPermission()) {
+            requestCameraPermission();
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -163,6 +180,20 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private void requestCameraPermission() {
+         ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.CAMERA},
+                    REQUEST_CAMERA);
+    }
+
+
+    private boolean haveCameraPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -216,6 +247,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.profile_menu:
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
+                finish();
+                return true;
+            case R.id.acception_menu:
+                Intent acceptionIntent = new Intent(MainActivity.this, AcceptionActivity.class);
+                startActivity(acceptionIntent);
                 finish();
                 return true;
             case R.id.sign_out_menu:

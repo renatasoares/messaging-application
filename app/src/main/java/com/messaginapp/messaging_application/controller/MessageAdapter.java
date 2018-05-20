@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.controller;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,10 +9,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.messaginapp.messaging_application.R;
+import com.messaginapp.messaging_application.model.AppMessage;
 
 import java.util.List;
 
-public class MessageAdapter extends ArrayAdapter<com.messaginapp.messaging_application.AppMessage> {
+public class MessageAdapter extends ArrayAdapter<com.messaginapp.messaging_application.model.AppMessage> {
 
     public MessageAdapter(Context context, int resource, List<AppMessage> objects) {
         super(context, resource, objects);
@@ -46,4 +48,5 @@ public class MessageAdapter extends ArrayAdapter<com.messaginapp.messaging_appli
 
         return convertView;
     }
+
 }

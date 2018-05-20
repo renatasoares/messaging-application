@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Messaging Application</string>
     <string name="send_button_label"> Send </string>
+    <string name="text_acception_1">Aguarde a resposta...</string>
     <string name="text_config_1">Oba! Você já instalou o Orbot! Aguarde...</string>
     <string name="text_config_2">Olá! Seja bem-vindo(a)!</string>
     <string name="text_config_3">Este é um aplicativo de mensagens focado em garantir a sua privacidade!</string>

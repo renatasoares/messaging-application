@@ -1,4 +1,4 @@
-package com.messaginapp.messaging_application;
+package com.messaginapp.messaging_application.activity;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.messaginapp.messaging_application.R;
+import com.messaginapp.messaging_application.controller.OrbotHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
