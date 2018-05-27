@@ -1,10 +1,14 @@
 package com.messaginapp.messaging_application.activity;
 
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -49,9 +53,9 @@ public class AcceptionActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference().child("solicitations");
 
         if(idSender != null){
-            Log.d("SENDER", idSender);
-            Acception acception = new Acception(idSender);
-            databaseReference.push().setValue(acception);
+            String key = databaseReference.push().getKey();
+            Acception acception = new Acception(idSender, false, key);
+            databaseReference.child(key).setValue(acception);
         }
 
         handleAcception();
@@ -68,12 +72,16 @@ public class AcceptionActivity extends AppCompatActivity {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Acception acception = dataSnapshot.getValue(Acception.class);
+                    String response = acception.getResponse() ? " accepted!" : " denied!";
+                    Toast.makeText(getApplicationContext(), "Solicitation of " + acception.getIdentifierSender() + response, Toast.LENGTH_LONG).show();
+                    acceptionAdapter.remove(acception);
+                    acceptionAdapter.notifyDataSetChanged();
+                    dataSnapshot.getRef().removeValue();
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Acception acception = dataSnapshot.getValue(Acception.class);
-                    acceptionAdapter.remove(acception);
                 }
 
                 @Override
