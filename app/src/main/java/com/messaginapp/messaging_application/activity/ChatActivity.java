@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_acception);
+        setContentView(R.layout.activity_chat);
 
         if (!haveCameraPermission()) {
             requestCameraPermission();
@@ -63,8 +64,8 @@ public class ChatActivity extends AppCompatActivity {
 
         chatListView = (ListView) findViewById(R.id.chatListView);
 
-        List<Chat> solicitations = new ArrayList<>();
-        chatAdapter = new ChatAdapter(this, R.layout.item_chat, solicitations);
+        List<Chat> chats = new ArrayList<>();
+        chatAdapter = new ChatAdapter(this, R.layout.item_chat, chats);
         chatListView.setAdapter(chatAdapter);
 
         chatListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
