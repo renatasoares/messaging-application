@@ -5,6 +5,9 @@ package com.messaginapp.messaging_application.model;
  */
 
 public class Chat {
+    private String identifierUser1;
+    private String identifierUser2;
+
     public Chat(){
 
     }
@@ -28,7 +31,4 @@ public class Chat {
     public void setIdentifierUser2(String identifierUser2) {
         this.identifierUser2 = identifierUser2;
     }
-
-    private String identifierUser1;
-    private String identifierUser2;
 }

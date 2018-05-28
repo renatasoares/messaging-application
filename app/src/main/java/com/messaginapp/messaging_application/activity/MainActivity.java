@@ -56,11 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private ProgressBar progressBar;
     private ImageButton photoButton;
-    private String username;
     private EditText messageEditText;
     private Button sendButton;
 
-    public static final String ANONYMOUS = "anonymous";
     public static final int LIMIT_LENGTH = 1000;
 
     private FirebaseDatabase firebaseDatabase;
@@ -70,29 +68,18 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference photosStorageReference;
     private StorageReference videosStorageReference;
 
-    private static final int PERMISSION_REQUEST_CAMERA = 3;
-
-
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private static final int RC_SIGN_IN = 123;
 
     private static final int RC_PHOTO_PICKER = 2;
-
-    private static final int REQUEST_CAMERA = 5;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!haveCameraPermission()) {
-            requestCameraPermission();
-        }
-
         setContentView(R.layout.activity_main);
 
-        username = ANONYMOUS;
+        firebaseAuth = FirebaseAuth.getInstance();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -147,58 +134,15 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppMessage appMessage = new AppMessage(messageEditText.getText().toString(), username, null, null, null);
+                AppMessage appMessage = new AppMessage(messageEditText.getText().toString(), firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
 
                 messageEditText.setText("");
             }
         });
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
-                    Toast.makeText(MainActivity.this, "Welcome, " + firebaseUser.getDisplayName() + "!", Toast.LENGTH_SHORT).show();
-                    onSignedIn(firebaseUser.getDisplayName());
-                } else {
-                    onSignedOut();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                                    .setAvailableProviders(
-                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
-                                    .setTosUrl("https://superapp.example.com/terms-of-service.html")
-                                    .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
-                                    .build(),
-                            RC_SIGN_IN);
-                }
-            }
-        };
-    }
+        handleMessage();
 
-    private void requestCameraPermission() {
-         ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.CAMERA},
-                    REQUEST_CAMERA);
-    }
-
-
-    private boolean haveCameraPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
     }
 
     @Override
@@ -221,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        AppMessage imageMessage = new AppMessage(null, username, downloadUrl.toString(), null, null);
+                        AppMessage imageMessage = new AppMessage(null, firebaseAuth.getCurrentUser().getDisplayName(), downloadUrl.toString(), null, null);
 
                         databaseReference.push().setValue(imageMessage);
                     }
@@ -233,49 +177,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        AppMessage videoMessage = new AppMessage(null, username, null, downloadUrl.toString(), null);
+                        AppMessage videoMessage = new AppMessage(null, firebaseAuth.getCurrentUser().getDisplayName(), null, downloadUrl.toString(), null);
                         databaseReference.push().setValue(videoMessage);
                     }
                 });
             }
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profile_menu:
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            case R.id.acception_menu:
-                Intent acceptionIntent = new Intent(MainActivity.this, AcceptionActivity.class);
-                startActivity(acceptionIntent);
-                finish();
-                return true;
-            case R.id.sign_out_menu:
-                AuthUI.getInstance().signOut(this);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        firebaseAuth.addAuthStateListener(authStateListener);
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        if(authStateListener != null) {
-            firebaseAuth.removeAuthStateListener(authStateListener);
-        }
-        removeListener();
-        messageAdapter.clear();
     }
 
     private void handleMessage(){
@@ -308,21 +215,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void removeListener(){
-        if(childEventListener != null) {
-            databaseReference.removeEventListener(childEventListener);
-            childEventListener = null;
-        }
-    }
-    private void onSignedIn(String providedName){
-        username = providedName;
-        handleMessage();
 
-    }
-
-    private void onSignedOut(){
-        username = ANONYMOUS;
-        messageAdapter.clear();
-        removeListener();
-    }
 }

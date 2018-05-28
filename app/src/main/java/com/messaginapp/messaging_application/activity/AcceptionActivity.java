@@ -75,6 +75,9 @@ public class AcceptionActivity extends AppCompatActivity {
                     Acception acception = dataSnapshot.getValue(Acception.class);
                     String response = acception.getResponse() ? " accepted!" : " denied!";
                     Toast.makeText(getApplicationContext(), "Solicitation of " + acception.getIdentifierSender() + response, Toast.LENGTH_LONG).show();
+                    if(acception.getResponse()){
+                        treatSolicitationAccepted(acception.getIdentifierSender());
+                    }
                     acceptionAdapter.remove(acception);
                     acceptionAdapter.notifyDataSetChanged();
                     dataSnapshot.getRef().removeValue();
@@ -97,4 +100,10 @@ public class AcceptionActivity extends AppCompatActivity {
         }
     }
 
+    private void treatSolicitationAccepted(String idSender){
+        Intent intentAcception = new Intent(AcceptionActivity.this, ChatActivity.class);
+        intentAcception.putExtra("idSender", idSender);
+        startActivity(intentAcception);
+        finish();
+    }
 }
