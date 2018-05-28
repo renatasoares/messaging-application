@@ -2,6 +2,7 @@ package com.messaginapp.messaging_application.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,7 +26,8 @@ public class ChatAdapter extends ArrayAdapter<Chat> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_invitation, parent, false);
+            Log.d("DEBUG", "vem aqui");
+            convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_chat, parent, false);
         }
 
         TextView chatTextView = (TextView) convertView.findViewById(R.id.chatTitle);

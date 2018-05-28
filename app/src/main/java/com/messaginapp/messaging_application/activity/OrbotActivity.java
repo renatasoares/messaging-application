@@ -87,7 +87,8 @@ public class OrbotActivity extends AppCompatActivity {
                         public synchronized void onResponse(JSONObject response){
                             try {
                                 if(response.getBoolean("IsTor")){
-                                    Intent intent = new Intent(OrbotActivity.this, MainActivity.class);
+                                    Log.d("HAHA", "isTor");
+                                    Intent intent = new Intent(OrbotActivity.this, ChatActivity.class);
                                     startActivity(intent);
                                     finish();
                                 }else{

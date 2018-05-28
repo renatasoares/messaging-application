@@ -1,9 +1,26 @@
 package com.messaginapp.messaging_application.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.BuildConfig;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,9 +28,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.messaginapp.messaging_application.R;
 import com.messaginapp.messaging_application.controller.ChatAdapter;
+import com.messaginapp.messaging_application.model.AppMessage;
 import com.messaginapp.messaging_application.model.Chat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -21,31 +40,95 @@ public class ChatActivity extends AppCompatActivity {
     private ListView chatListView;
     private ChatAdapter chatAdapter;
     private FirebaseDatabase firebaseDatabase;
+    private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
+    private String idSender;
+    private static final int REQUEST_CAMERA = 5;
+    private static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_acception);
+        setContentView(R.layout.activity_chat);
 
+        if (!haveCameraPermission()) {
+            requestCameraPermission();
+        }
+
+        Intent intent = getIntent();
+        idSender = intent.getStringExtra("idSender");
+
+        firebaseAuth = FirebaseAuth.getInstance();
 
         chatListView = (ListView) findViewById(R.id.chatListView);
 
-        List<Chat> solicitations = new ArrayList<>();
-        chatAdapter = new ChatAdapter(this, R.layout.item_chat, solicitations);
+        List<Chat> chats = new ArrayList<>();
+        chatAdapter = new ChatAdapter(this, R.layout.item_chat, chats);
         chatListView.setAdapter(chatAdapter);
+
+        chatListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("room");
 
-        Chat chat = new Chat();
-        databaseReference.push().setValue(chat);
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    Toast.makeText(ChatActivity.this, "Welcome, " + firebaseUser.getDisplayName() + "!", Toast.LENGTH_SHORT).show();
+                    onSignedIn(firebaseUser.getDisplayName());
+                } else {
+                    onSignedOut();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                                    .setAvailableProviders(
+                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                                    .setTosUrl("https://superapp.example.com/terms-of-service.html")
+                                    .setPrivacyPolicyUrl("https://superapp.example.com/privacy-policy.html")
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
 
-        handleAcception();
+        if(idSender != null) {
+            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+            Chat chat = new Chat(firebaseUser.getUid(),idSender);
+            databaseReference.push().setValue(chat);
+        }
+
+        handleChat();
     }
 
-    private void handleAcception(){
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(ChatActivity.this, new String[]{android.Manifest.permission.CAMERA},
+                REQUEST_CAMERA);
+    }
+
+
+    private boolean haveCameraPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+        return true;
+    }
+
+    private void handleChat(){
         if(childEventListener == null) {
             childEventListener = new ChildEventListener() {
                 @Override
@@ -77,5 +160,65 @@ public class ChatActivity extends AppCompatActivity {
 
             databaseReference.addChildEventListener(childEventListener);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile_menu:
+                Intent intent = new Intent(ChatActivity.this, ProfileActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.acception_menu:
+                Intent acceptionIntent = new Intent(ChatActivity.this, AcceptionActivity.class);
+                startActivity(acceptionIntent);
+                finish();
+                return true;
+            case R.id.sign_out_menu:
+                AuthUI.getInstance().signOut(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if(authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+        removeListener();
+        chatAdapter.clear();
+    }
+
+    private void removeListener(){
+        if(childEventListener != null) {
+            databaseReference.removeEventListener(childEventListener);
+            childEventListener = null;
+        }
+    }
+    private void onSignedIn(String providedName){
+        handleChat();
+
+    }
+
+    private void onSignedOut(){
+        chatAdapter.clear();
+        removeListener();
     }
 }
