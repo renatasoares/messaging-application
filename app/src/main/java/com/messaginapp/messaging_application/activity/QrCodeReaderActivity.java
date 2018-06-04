@@ -107,6 +107,7 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
 
     private class GetUser extends AsyncTask<String, Void, String> {
 
+
         @Override
         protected String doInBackground(String... params) {
             AWSMobileClient.getInstance().initialize(getApplicationContext()).execute();
@@ -125,7 +126,9 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
                 Log.d("AWS", e.getErrorMessage());
             }
 
-            if(result.toString() == "{}" || result == null){
+            Log.d("Resultado", result + " ");
+
+            if(result.toString() == "{}" || result == null || result.getItem() == null){
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(QrCodeReaderActivity.this, "Usuário não encontrado!", Toast.LENGTH_SHORT).show();
