@@ -28,6 +28,7 @@ import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.messaginapp.messaging_application.R;
 
 import com.google.zxing.Result;
+import com.messaginapp.messaging_application.model.Acception;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,8 +127,6 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
                 Log.d("AWS", e.getErrorMessage());
             }
 
-            Log.d("Resultado", result + " ");
-
             if(result.toString() == "{}" || result == null || result.getItem() == null){
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -137,6 +136,7 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
             }else{
                 Intent intentAcception = new Intent(QrCodeReaderActivity.this, AcceptionActivity.class);
                 intentAcception.putExtra("idSender", idSender);
+                intentAcception.putExtra("idReceiver", result.getItem().get("userId").getS());
                 startActivity(intentAcception);
                 finish();
             }
