@@ -61,9 +61,9 @@ public class AcceptionActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference().child("solicitations");
 
         if(idSender != null){
-            String key = databaseReference.push().getKey();
-            Acception acception = new Acception(idSender, idReceiver, false, key);
-            databaseReference.child(key).setValue(acception);
+            String keyFirebase = databaseReference.push().getKey();
+            Acception acception = new Acception(idSender, idReceiver, false, keyFirebase);
+            databaseReference.child(keyFirebase).setValue(acception);
         }
 
         handleAcception();
