@@ -75,7 +75,6 @@ public class AcceptionActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Acception acception = dataSnapshot.getValue(Acception.class);
-                    Log.d("PQP", key + " " + acception.getIdentifierReceiver() );
                     if(acception.getIdentifierReceiver().equals(key)) {
                         Log.d("PQP", "adicinou");
                         acceptionAdapter.add(acception);
@@ -114,7 +113,7 @@ public class AcceptionActivity extends AppCompatActivity {
 
     private void treatSolicitationAccepted(String idSender){
         Intent intentAcception = new Intent(AcceptionActivity.this, ChatActivity.class);
-        intentAcception.putExtra("idSender", idSender);
+        intentAcception.putExtra("idReceiver", idReceiver);
         startActivity(intentAcception);
         finish();
     }

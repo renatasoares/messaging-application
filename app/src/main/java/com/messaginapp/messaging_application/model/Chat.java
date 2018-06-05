@@ -1,5 +1,8 @@
 package com.messaginapp.messaging_application.model;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by renata on 21/05/18.
  */

@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.firebase.database.ValueEventListener;
 import com.messaginapp.messaging_application.R;
 
 import com.firebase.ui.auth.AuthUI;
@@ -47,6 +49,7 @@ import java.util.List;
 import com.messaginapp.messaging_application.controller.MessageAdapter;
 import com.messaginapp.messaging_application.model.Acception;
 import com.messaginapp.messaging_application.model.AppMessage;
+import com.messaginapp.messaging_application.model.Chat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseStorage firebaseStorage;
     private StorageReference photosStorageReference;
     private StorageReference videosStorageReference;
+    private String idUser1;
+    private String idUser2;
+    private String idUser;
 
     private FirebaseAuth firebaseAuth;
     private static final int RC_SIGN_IN = 123;
@@ -79,7 +85,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        Intent intent = getIntent();
+        idUser1 = intent.getStringExtra("idUser1");
+        idUser2 = intent.getStringExtra("idUser2");
+
+
+        if(idUser1 == null || idUser2 == null || idUser1.isEmpty()  || idUser2.isEmpty()){
+            finish();
+        }
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -94,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
         photoButton = (ImageButton) findViewById(R.id.photoPickerButton);
         messageEditText = (EditText) findViewById(R.id.messageEditText);
         sendButton = (Button) findViewById(R.id.sendButton);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.getCurrentUser().reload();
+        idUser = firebaseAuth.getCurrentUser().getUid().toString();
 
         List<AppMessage> appMessages = new ArrayList<>();
         messageAdapter = new MessageAdapter(this, R.layout.item_message, appMessages);
@@ -134,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppMessage appMessage = new AppMessage(messageEditText.getText().toString(), firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
+                AppMessage appMessage = new AppMessage(idUser1, idUser2, messageEditText.getText().toString(), firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
 
                 messageEditText.setText("");
@@ -165,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        AppMessage imageMessage = new AppMessage(null, firebaseAuth.getCurrentUser().getDisplayName(), downloadUrl.toString(), null, null);
+                        AppMessage imageMessage = new AppMessage(idUser1, idUser2, null, firebaseAuth.getCurrentUser().getDisplayName(), downloadUrl.toString(), null, null);
 
                         databaseReference.push().setValue(imageMessage);
                     }
@@ -177,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        AppMessage videoMessage = new AppMessage(null, firebaseAuth.getCurrentUser().getDisplayName(), null, downloadUrl.toString(), null);
+                        AppMessage videoMessage = new AppMessage(idUser1, idUser2, null, firebaseAuth.getCurrentUser().getDisplayName(), null, downloadUrl.toString(), null);
                         databaseReference.push().setValue(videoMessage);
                     }
                 });
@@ -191,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     AppMessage message = dataSnapshot.getValue(AppMessage.class);
-                    messageAdapter.add(message);
+                    if(message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
+                        messageAdapter.add(message);
+                   }
                 }
 
                 @Override
