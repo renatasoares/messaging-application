@@ -32,7 +32,10 @@ public class AcceptionActivity extends AppCompatActivity {
     private AcceptionAdapter acceptionAdapter;
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
     private String idSender;
+    private String idReceiver;
+    private String key;
     private ChildEventListener childEventListener;
 
     @Override
@@ -42,6 +45,7 @@ public class AcceptionActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         idSender = intent.getStringExtra("idSender");
+        idReceiver = intent.getStringExtra("idReceiver");
 
         acceptionListView = (ListView) findViewById(R.id.acceptionListView);
 
@@ -49,13 +53,17 @@ public class AcceptionActivity extends AppCompatActivity {
         acceptionAdapter = new AcceptionAdapter(this, R.layout.item_invitation, solicitations);
         acceptionListView.setAdapter(acceptionAdapter);
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.getCurrentUser().reload();
+        key = firebaseAuth.getCurrentUser().getUid().toString();
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("solicitations");
 
         if(idSender != null){
-            String key = databaseReference.push().getKey();
-            Acception acception = new Acception(idSender, false, key);
-            databaseReference.child(key).setValue(acception);
+            String keyFirebase = databaseReference.push().getKey();
+            Acception acception = new Acception(idSender, idReceiver, false, keyFirebase);
+            databaseReference.child(keyFirebase).setValue(acception);
         }
 
         handleAcception();
@@ -67,7 +75,10 @@ public class AcceptionActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Acception acception = dataSnapshot.getValue(Acception.class);
-                    acceptionAdapter.add(acception);
+                    if(acception.getIdentifierReceiver().equals(key)) {
+                        Log.d("PQP", "adicinou");
+                        acceptionAdapter.add(acception);
+                    }
                 }
 
                 @Override
@@ -102,7 +113,7 @@ public class AcceptionActivity extends AppCompatActivity {
 
     private void treatSolicitationAccepted(String idSender){
         Intent intentAcception = new Intent(AcceptionActivity.this, ChatActivity.class);
-        intentAcception.putExtra("idSender", idSender);
+        intentAcception.putExtra("idReceiver", idReceiver);
         startActivity(intentAcception);
         finish();
     }

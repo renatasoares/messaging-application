@@ -26,7 +26,6 @@ public class ChatAdapter extends ArrayAdapter<Chat> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            Log.d("DEBUG", "vem aqui");
             convertView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.item_chat, parent, false);
         }
 

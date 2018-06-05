@@ -44,7 +44,8 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
-    private String idSender;
+    private String idReceiver;
+    private String idUser;
     private static final int REQUEST_CAMERA = 5;
     private static final int RC_SIGN_IN = 123;
 
@@ -58,9 +59,10 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        idSender = intent.getStringExtra("idSender");
+        idReceiver = intent.getStringExtra("idReceiver");
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.getCurrentUser().reload();
 
         chatListView = (ListView) findViewById(R.id.chatListView);
 
@@ -71,11 +73,16 @@ public class ChatActivity extends AppCompatActivity {
         chatListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Chat chat = (Chat) parent.getItemAtPosition(position);
                 Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+                intent.putExtra("idUser1", chat.getIdentifierUser1());
+                intent.putExtra("idUser2", chat.getIdentifierUser2());
                 startActivity(intent);
                 finish();
             }
         });
+
+        idUser = firebaseAuth.getCurrentUser().getUid().toString();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("room");
@@ -105,9 +112,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
-        if(idSender != null) {
-            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-            Chat chat = new Chat(firebaseUser.getUid(),idSender);
+        if(idReceiver != null) {
+            Chat chat = new Chat(idUser,idReceiver);
             databaseReference.push().setValue(chat);
         }
 
@@ -134,7 +140,9 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Chat chat = dataSnapshot.getValue(Chat.class);
-                    chatAdapter.add(chat);
+                    if(chat.getIdentifierUser1().equals(idUser) || chat.getIdentifierUser2().equals(idUser)) {
+                        chatAdapter.add(chat);
+                    }
                 }
 
                 @Override

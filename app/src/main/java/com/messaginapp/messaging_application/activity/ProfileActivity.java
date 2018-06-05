@@ -80,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         buttonNameChat = (Button) findViewById(R.id.editUsername);
         buttonNewChat = (Button) findViewById(R.id.newChatButton);
 
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         firebaseAuth.getCurrentUser().reload();
