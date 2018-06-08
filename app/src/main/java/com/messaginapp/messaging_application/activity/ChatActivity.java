@@ -28,8 +28,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.messaginapp.messaging_application.R;
 import com.messaginapp.messaging_application.controller.ChatAdapter;
+import com.messaginapp.messaging_application.controller.KeyStorageHelper;
 import com.messaginapp.messaging_application.model.AppMessage;
 import com.messaginapp.messaging_application.model.Chat;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +95,11 @@ public class ChatActivity extends AppCompatActivity {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     Toast.makeText(ChatActivity.this, "Welcome, " + firebaseUser.getDisplayName() + "!", Toast.LENGTH_SHORT).show();
-                    onSignedIn(firebaseUser.getDisplayName());
+                    try {
+                        onSignedIn(firebaseUser.getDisplayName());
+                    } catch (CryptoException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     onSignedOut();
                     startActivityForResult(
@@ -220,9 +226,10 @@ public class ChatActivity extends AppCompatActivity {
             childEventListener = null;
         }
     }
-    private void onSignedIn(String providedName){
+    private void onSignedIn(String providedName) throws CryptoException {
+        KeyStorageHelper keyStorageHelper = new KeyStorageHelper();
+        keyStorageHelper.generatePrivateKey(firebaseAuth.getCurrentUser().getUid());
         handleChat();
-
     }
 
     private void onSignedOut(){

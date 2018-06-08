@@ -45,11 +45,21 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import com.messaginapp.messaging_application.controller.CryptoHelper;
+import com.messaginapp.messaging_application.controller.KeyStorageHelper;
 import com.messaginapp.messaging_application.controller.MessageAdapter;
 import com.messaginapp.messaging_application.model.Acception;
 import com.messaginapp.messaging_application.model.AppMessage;
 import com.messaginapp.messaging_application.model.Chat;
+import com.virgilsecurity.sdk.crypto.PrivateKey;
+import com.virgilsecurity.sdk.crypto.VirgilCrypto;
+import com.virgilsecurity.sdk.crypto.VirgilPrivateKey;
+import com.virgilsecurity.sdk.crypto.VirgilPublicKey;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+import com.virgilsecurity.sdk.utils.ConvertionUtils;
+import com.virgilsecurity.sdk.utils.Tuple;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -151,7 +161,12 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AppMessage appMessage = new AppMessage(idUser1, idUser2, messageEditText.getText().toString(), firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
+
+                CryptoHelper cryptoHelper = new CryptoHelper();
+                String messagePlainText = messageEditText.getText().toString();
+                String encryptedData = cryptoHelper.encrypt(messagePlainText, idUser1, idUser2);
+
+                AppMessage appMessage = new AppMessage(idUser1, idUser2,encryptedData , firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
 
                 messageEditText.setText("");
@@ -207,10 +222,20 @@ public class MainActivity extends AppCompatActivity {
             childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    CryptoHelper cryptoHelper = new CryptoHelper();
                     AppMessage message = dataSnapshot.getValue(AppMessage.class);
+
+                    String decryptedMessage="";
+                    try {
+                        decryptedMessage = cryptoHelper.decryptThenVerify(message.getBodyMessage(), idUser1, idUser2);
+                    } catch (CryptoException e) {
+                        e.printStackTrace();
+                    }
+
                     if(message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
+                        message.setBodyMessage(decryptedMessage);
                         messageAdapter.add(message);
-                   }
+                    }
                 }
 
                 @Override
