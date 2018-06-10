@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -50,6 +51,7 @@ import java.util.Map;
 import com.messaginapp.messaging_application.controller.CryptoHelper;
 import com.messaginapp.messaging_application.controller.KeyStorageHelper;
 import com.messaginapp.messaging_application.controller.MessageAdapter;
+import com.messaginapp.messaging_application.controller.PublicKeyHelper;
 import com.messaginapp.messaging_application.model.Acception;
 import com.messaginapp.messaging_application.model.AppMessage;
 import com.messaginapp.messaging_application.model.Chat;
@@ -92,6 +94,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -162,9 +169,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                CryptoHelper cryptoHelper = new CryptoHelper();
+                PublicKeyHelper publicKeyHelper = new PublicKeyHelper();
                 String messagePlainText = messageEditText.getText().toString();
-                String encryptedData = cryptoHelper.encrypt(messagePlainText, idUser1, idUser2);
+                String encryptedData = "";
+                try {
+                    encryptedData = publicKeyHelper.signThenEncrypt(firebaseAuth.getCurrentUser().getUid(), messagePlainText, idUser1, idUser2, getApplicationContext());
+                } catch (CryptoException e) {
+                    e.printStackTrace();
+                }
 
                 AppMessage appMessage = new AppMessage(idUser1, idUser2,encryptedData , firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
@@ -222,12 +234,12 @@ public class MainActivity extends AppCompatActivity {
             childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    CryptoHelper cryptoHelper = new CryptoHelper();
+                    PublicKeyHelper publicKeyHelper = new PublicKeyHelper();
                     AppMessage message = dataSnapshot.getValue(AppMessage.class);
 
                     String decryptedMessage="";
                     try {
-                        decryptedMessage = cryptoHelper.decryptThenVerify(message.getBodyMessage(), idUser1, idUser2);
+                        decryptedMessage = publicKeyHelper.decryptThenVerify(firebaseAuth.getCurrentUser().getUid(), message.getBodyMessage(), idUser1, idUser2, getApplicationContext());
                     } catch (CryptoException e) {
                         e.printStackTrace();
                     }
