@@ -36,7 +36,7 @@ public class AcceptionAdapter extends ArrayAdapter<Acception> {
         TextView solicitationTextView = (TextView) convertView.findViewById(R.id.newChatInviter);
 
         Acception solicitation = getItem(position);
-        solicitationTextView.setText(solicitation.getIdentifierSender());
+        solicitationTextView.setText(solicitation.getRoomName());
 
         ImageButton acceptButton = (ImageButton) convertView.findViewById(R.id.acceptButton);
         ImageButton declineButton = (ImageButton) convertView.findViewById(R.id.declineButton);

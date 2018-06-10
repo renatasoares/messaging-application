@@ -105,7 +105,9 @@ public class CryptoEEHelper {
         byte[] encryptedData = new byte[0];
         try {
             List<Card> cardsSender = getCardManager(currentUser).searchCards(currentUser);
-            List<Card> cardsReceiver =getCardManager(currentUser).searchCards(receiver);
+            List<Card> cardsReceiver = getCardManager(currentUser).searchCards(receiver);
+
+            Log.d("PQP", currentUser + " "+ receiver);
 
             List<VirgilPublicKey> senderRelevantCardsPublicKeys = new ArrayList<>();
             for (Card card : cardsSender) {

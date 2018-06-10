@@ -11,12 +11,23 @@ public class Chat {
     private String identifierUser1;
     private String identifierUser2;
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    private String roomName;
+
     public Chat(){
 
     }
-    public Chat(String identifierUser1, String identifierUser2) {
+    public Chat(String identifierUser1, String identifierUser2, String roomName) {
         this.identifierUser1 = identifierUser1;
         this.identifierUser2 = identifierUser2;
+        this.roomName = roomName;
     }
 
     public String getIdentifierUser1() {

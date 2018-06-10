@@ -147,11 +147,12 @@ public class MainActivity extends AppCompatActivity {
                 CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
                 String messagePlainText = messageEditText.getText().toString();
                 String option = "";
-                if(firebaseAuth.getCurrentUser().getUid().toString() == idUser1){
+                if(firebaseAuth.getCurrentUser().getUid().toString().equals(idUser1)){
                     option = idUser2;
                 }else{
                     option = idUser1;
                 }
+                Log.d("PQP", option + " " + idUser1 + " " + idUser2 + " " + idUser);
                 String encryptedData = cryptoEEHelper.encrypt(firebaseAuth.getCurrentUser().getUid().toString(), messagePlainText, option);
                 AppMessage appMessage = new AppMessage(idUser1, idUser2,encryptedData , firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
@@ -214,13 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
                     String decryptedMessage= cryptoEEHelper.decrypt(message.getBodyMessage().toString(),
                             firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
-                    /*try {
-                        decryptedMessage = cryptoEEHelper.decryptThenVerify(firebaseAuth.getCurrentUser().getUid(), message.getBodyMessage(), idUser1, idUser2, getApplicationContext());
-                    } catch (CryptoException e) {
-                        e.printStackTrace();
-                    }*/
-
-                    Log.d("DECRYPTED", decryptedMessage);
 
                     if(message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
                         message.setBodyMessage(decryptedMessage);
