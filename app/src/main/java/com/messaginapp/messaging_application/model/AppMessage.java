@@ -27,7 +27,7 @@ public class AppMessage {
         return bodyMessage;
     }
 
-    private void setBodyMessage(String bodyMessage) {
+    public void setBodyMessage(String bodyMessage) {
         this.bodyMessage = bodyMessage;
     }
 

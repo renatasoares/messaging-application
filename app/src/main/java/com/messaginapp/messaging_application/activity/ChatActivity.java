@@ -3,12 +3,12 @@ package com.messaginapp.messaging_application.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,8 +28,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.messaginapp.messaging_application.R;
 import com.messaginapp.messaging_application.controller.ChatAdapter;
-import com.messaginapp.messaging_application.model.AppMessage;
+import com.messaginapp.messaging_application.controller.CryptoEEHelper;
 import com.messaginapp.messaging_application.model.Chat;
+import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +57,11 @@ public class ChatActivity extends AppCompatActivity {
 
         if (!haveCameraPermission()) {
             requestCameraPermission();
+        }
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
 
         Intent intent = getIntent();
@@ -93,7 +99,11 @@ public class ChatActivity extends AppCompatActivity {
                 FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
                     Toast.makeText(ChatActivity.this, "Welcome, " + firebaseUser.getDisplayName() + "!", Toast.LENGTH_SHORT).show();
-                    onSignedIn(firebaseUser.getDisplayName());
+                    try {
+                        onSignedIn(firebaseUser.getDisplayName());
+                    } catch (CryptoException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     onSignedOut();
                     startActivityForResult(
@@ -220,9 +230,10 @@ public class ChatActivity extends AppCompatActivity {
             childEventListener = null;
         }
     }
-    private void onSignedIn(String providedName){
+    private void onSignedIn(String providedName) throws CryptoException {
+        CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
+        cryptoEEHelper.createCard(firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
         handleChat();
-
     }
 
     private void onSignedOut(){
