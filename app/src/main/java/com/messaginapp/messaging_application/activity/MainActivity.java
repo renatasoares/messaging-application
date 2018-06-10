@@ -1,23 +1,15 @@
 package com.messaginapp.messaging_application.activity;
 
-import android.*;
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,14 +18,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.firebase.database.ValueEventListener;
 import com.messaginapp.messaging_application.R;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.BuildConfig;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,24 +32,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import com.messaginapp.messaging_application.controller.CryptoHelper;
-import com.messaginapp.messaging_application.controller.KeyStorageHelper;
 import com.messaginapp.messaging_application.controller.MessageAdapter;
-import com.messaginapp.messaging_application.controller.PublicKeyHelper;
-import com.messaginapp.messaging_application.model.Acception;
+import com.messaginapp.messaging_application.controller.CryptoEEHelper;
 import com.messaginapp.messaging_application.model.AppMessage;
-import com.messaginapp.messaging_application.model.Chat;
-import com.virgilsecurity.sdk.crypto.PrivateKey;
-import com.virgilsecurity.sdk.crypto.VirgilCrypto;
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKey;
-import com.virgilsecurity.sdk.crypto.VirgilPublicKey;
-import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
-import com.virgilsecurity.sdk.utils.ConvertionUtils;
-import com.virgilsecurity.sdk.utils.Tuple;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -169,15 +144,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                PublicKeyHelper publicKeyHelper = new PublicKeyHelper();
+                CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
                 String messagePlainText = messageEditText.getText().toString();
-                String encryptedData = "";
-                try {
-                    encryptedData = publicKeyHelper.signThenEncrypt(firebaseAuth.getCurrentUser().getUid(), messagePlainText, idUser1, idUser2, getApplicationContext());
-                } catch (CryptoException e) {
-                    e.printStackTrace();
+                String option = "";
+                if(firebaseAuth.getCurrentUser().getUid().toString() == idUser1){
+                    option = idUser2;
+                }else{
+                    option = idUser1;
                 }
-
+                String encryptedData = cryptoEEHelper.encrypt(firebaseAuth.getCurrentUser().getUid().toString(), messagePlainText, option);
                 AppMessage appMessage = new AppMessage(idUser1, idUser2,encryptedData , firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
 
@@ -234,15 +209,18 @@ public class MainActivity extends AppCompatActivity {
             childEventListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    PublicKeyHelper publicKeyHelper = new PublicKeyHelper();
+                    CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
                     AppMessage message = dataSnapshot.getValue(AppMessage.class);
 
-                    String decryptedMessage="";
-                    try {
-                        decryptedMessage = publicKeyHelper.decryptThenVerify(firebaseAuth.getCurrentUser().getUid(), message.getBodyMessage(), idUser1, idUser2, getApplicationContext());
+                    String decryptedMessage= cryptoEEHelper.decrypt(message.getBodyMessage().toString(),
+                            firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
+                    /*try {
+                        decryptedMessage = cryptoEEHelper.decryptThenVerify(firebaseAuth.getCurrentUser().getUid(), message.getBodyMessage(), idUser1, idUser2, getApplicationContext());
                     } catch (CryptoException e) {
                         e.printStackTrace();
-                    }
+                    }*/
+
+                    Log.d("DECRYPTED", decryptedMessage);
 
                     if(message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
                         message.setBodyMessage(decryptedMessage);

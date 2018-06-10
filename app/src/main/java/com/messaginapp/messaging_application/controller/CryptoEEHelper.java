@@ -14,12 +14,14 @@ import com.virgilsecurity.sdk.cards.validation.VirgilCardVerifier;
 import com.virgilsecurity.sdk.client.exceptions.VirgilServiceException;
 import com.virgilsecurity.sdk.crypto.CardCrypto;
 import com.virgilsecurity.sdk.crypto.PrivateKey;
+import com.virgilsecurity.sdk.crypto.VirgilCardCrypto;
 import com.virgilsecurity.sdk.crypto.VirgilCrypto;
 import com.virgilsecurity.sdk.crypto.VirgilKeyPair;
 import com.virgilsecurity.sdk.crypto.VirgilPrivateKey;
 import com.virgilsecurity.sdk.crypto.VirgilPrivateKeyExporter;
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+import com.virgilsecurity.sdk.crypto.exceptions.EncryptionException;
 import com.virgilsecurity.sdk.jwt.contract.AccessTokenProvider;
 import com.virgilsecurity.sdk.storage.JsonFileKeyStorage;
 import com.virgilsecurity.sdk.storage.KeyStorage;
@@ -28,7 +30,7 @@ import com.virgilsecurity.sdk.utils.ConvertionUtils;
 import com.virgilsecurity.sdk.utils.Tuple;
 
 
-public class PublicKeyHelper {
+public class CryptoEEHelper {
 
     private static PrivateKeyStorage privateKeyStorage;
     private static Context context;
@@ -78,66 +80,52 @@ public class PublicKeyHelper {
         }
     }
 
-
-    public List<Card> searchCardByIdentity(String userIdentifier) {
-        List<Card> cards = null;
-        try {
-            cards = getCardManager(userIdentifier).searchCards(userIdentifier);
-        } catch (CryptoException | VirgilServiceException e) {
-            e.printStackTrace();
-        }
-        return cards;
+    public VirgilCrypto getVirgilCrypto(String userIdentifier) {
+        return ((VirgilCardCrypto) getCardManager(userIdentifier).getCrypto()).getVirgilCrypto();
     }
 
-    public String signThenEncrypt(String currentUser, String messageToEncrypt, String userId1, String userId2, Context context) throws CryptoException {
-        VirgilCrypto crypto = new VirgilCrypto();
-        byte[] dataToEncrypt = ConvertionUtils.toBytes(messageToEncrypt);
+    public String decrypt(String text, String currentUser, Context context) {
+        byte[] cipherData = ConvertionUtils.base64ToBytes(text);
+
+        try {
+            byte[] decryptedData =
+                    getVirgilCrypto(currentUser).decrypt(cipherData,
+                            (VirgilPrivateKey) getPrivateKeyStorage(context).load(
+                                    currentUser)
+                                    .getLeft());
+            return ConvertionUtils.toString(decryptedData);
+        } catch (CryptoException e) {
+            e.printStackTrace();
+            return "Message encrypted";
+        }
+    }
+
+    public String encrypt(String currentUser, String data, String receiver) {
+        byte[] toEncrypt = ConvertionUtils.toBytes(data);
         byte[] encryptedData = new byte[0];
-
-        Tuple<PrivateKey, Map<String, String>> senderPrivateKeyEntry = getPrivateKeyStorage(getContextInstance(context)).load(userId1);
-        VirgilPrivateKey senderPrivateKey = (VirgilPrivateKey) senderPrivateKeyEntry.getLeft();
-
         try {
-            List<Card> cards = getCardManager(currentUser).searchCards(userId2);
-            List<VirgilPublicKey> receiverRelevantCardsPublicKeys = new ArrayList<>();
-            for (Card card : cards) {
-                if (!card.isOutdated()) {
-                    receiverRelevantCardsPublicKeys.add((VirgilPublicKey) card.getPublicKey());
-                }
-            }
-            encryptedData = crypto.signThenEncrypt(dataToEncrypt, senderPrivateKey, receiverRelevantCardsPublicKeys);
+            List<Card> cardsSender = getCardManager(currentUser).searchCards(currentUser);
+            List<Card> cardsReceiver =getCardManager(currentUser).searchCards(receiver);
 
-        } catch (CryptoException | VirgilServiceException e) {
-            e.printStackTrace();
-        }
-
-        return encryptedData.toString();
-    }
-
-
-    public String decryptThenVerify(String currentUser, String messagePlainText, String userId1, String userId2, Context context) throws CryptoException {
-        VirgilCrypto crypto = new VirgilCrypto();
-
-        byte[] encryptedData = ConvertionUtils.toBytes(messagePlainText);
-        byte[] decryptedData = new byte[0];
-
-        Tuple<PrivateKey, Map<String, String>> receiverPrivateKeyEntry = getPrivateKeyStorage(getContextInstance(context)).load(userId2);
-        VirgilPrivateKey receiverPrivateKey = (VirgilPrivateKey) receiverPrivateKeyEntry.getLeft();
-
-        try {
-            List<Card> cards = getCardManager(currentUser).searchCards(userId1);
             List<VirgilPublicKey> senderRelevantCardsPublicKeys = new ArrayList<>();
-            for (Card card : cards) {
+            for (Card card : cardsSender) {
                 if (!card.isOutdated()) {
                     senderRelevantCardsPublicKeys.add((VirgilPublicKey) card.getPublicKey());
                 }
             }
-
-            decryptedData = crypto.decryptThenVerify(encryptedData, receiverPrivateKey, senderRelevantCardsPublicKeys);
-        } catch (CryptoException | VirgilServiceException e) {
+            for (Card card : cardsReceiver) {
+                if (!card.isOutdated()) {
+                    senderRelevantCardsPublicKeys.add((VirgilPublicKey) card.getPublicKey());
+                }
+            }
+            encryptedData = getVirgilCrypto(currentUser).encrypt(toEncrypt, senderRelevantCardsPublicKeys);
+        } catch (EncryptionException e) {
+            e.printStackTrace();
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        } catch (VirgilServiceException e) {
             e.printStackTrace();
         }
-
-        return decryptedData.toString();
+        return ConvertionUtils.toBase64String(encryptedData);
     }
 }

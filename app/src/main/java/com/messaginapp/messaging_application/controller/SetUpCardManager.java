@@ -30,7 +30,6 @@ public class SetUpCardManager {
 
     private static final String PUBLIC_KEY_STR = "MCowBQYDK2VwAyEAljOYGANYiVq1WbvVvoYIKtvZi2ji9bAhxyu6iV/LF8M=";
     public static CardCrypto setupCrypto() {
-        // Setup Crypto
         CardCrypto cardCrypto = new VirgilCardCrypto();
 
         return cardCrypto;

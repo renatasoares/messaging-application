@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,10 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.messaginapp.messaging_application.R;
 import com.messaginapp.messaging_application.controller.ChatAdapter;
-import com.messaginapp.messaging_application.controller.JwtHelper;
-import com.messaginapp.messaging_application.controller.KeyStorageHelper;
-import com.messaginapp.messaging_application.controller.PublicKeyHelper;
-import com.messaginapp.messaging_application.model.AppMessage;
+import com.messaginapp.messaging_application.controller.CryptoEEHelper;
 import com.messaginapp.messaging_application.model.Chat;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 
@@ -235,10 +231,8 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
     private void onSignedIn(String providedName) throws CryptoException {
-        PublicKeyHelper publicKeyHelper = new PublicKeyHelper();
-        publicKeyHelper.createCard(firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
-        //KeyStorageHelper keyStorageHelper = new KeyStorageHelper();
-        //keyStorageHelper.generatePrivateKey(firebaseAuth.getCurrentUser().getUid(), getApplicationContext());
+        CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
+        cryptoEEHelper.createCard(firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
         handleChat();
     }
 
