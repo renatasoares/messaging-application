@@ -2,7 +2,7 @@ package com.messaginapp.messaging_application.model;
 
 public class Acception {
     private String id;
-    private String identifierSender;
+    private String roomName;
     private String identifierReceiver;
     private Boolean response;
 
@@ -19,8 +19,8 @@ public class Acception {
 
     }
 
-    public Acception(String identifierSender, String identifierReceiver, Boolean response, String id) {
-        this.identifierSender = identifierSender;
+    public Acception(String roomName, String identifierReceiver, Boolean response, String id) {
+        this.roomName = roomName;
         this.identifierReceiver = identifierReceiver;
         this.response = response;
         this.id = id;
@@ -34,12 +34,12 @@ public class Acception {
         this.response = response;
     }
 
-    public String getIdentifierSender() {
-        return identifierSender;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setIdentifierSender(String identifierSender) {
-        this.identifierSender = identifierSender;
+    public void setRoomName(String identifierSender) {
+        this.roomName = identifierSender;
     }
 
     public String getId() {

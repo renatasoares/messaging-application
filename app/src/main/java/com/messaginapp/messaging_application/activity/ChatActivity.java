@@ -3,12 +3,14 @@ package com.messaginapp.messaging_application.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +19,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.GetItemResult;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +41,9 @@ import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -46,6 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     private ChildEventListener childEventListener;
     private String idReceiver;
+    private String roomName;
     private String idUser;
     private static final int REQUEST_CAMERA = 5;
     private static final int RC_SIGN_IN = 123;
@@ -59,13 +69,9 @@ public class ChatActivity extends AppCompatActivity {
             requestCameraPermission();
         }
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
         Intent intent = getIntent();
         idReceiver = intent.getStringExtra("idReceiver");
+        roomName = intent.getStringExtra("roomName");
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.getCurrentUser().reload();
@@ -123,7 +129,7 @@ public class ChatActivity extends AppCompatActivity {
         };
 
         if(idReceiver != null) {
-            Chat chat = new Chat(idUser,idReceiver);
+            Chat chat = new Chat(idUser,idReceiver, roomName);
             databaseReference.push().setValue(chat);
         }
 
@@ -231,13 +237,28 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
     private void onSignedIn(String providedName) throws CryptoException {
-        CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
-        cryptoEEHelper.createCard(firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
+        new RegisterUser().execute();
         handleChat();
     }
 
     private void onSignedOut(){
         chatAdapter.clear();
         removeListener();
+    }
+
+    private class RegisterUser extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
+            try {
+                cryptoEEHelper.createCard(firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
+            } catch (CryptoException e) {
+                e.printStackTrace();
+            }
+
+            return "OK";
+        }
+
     }
 }

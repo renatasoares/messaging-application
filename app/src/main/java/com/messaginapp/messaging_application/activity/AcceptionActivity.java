@@ -76,7 +76,6 @@ public class AcceptionActivity extends AppCompatActivity {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Acception acception = dataSnapshot.getValue(Acception.class);
                     if(acception.getIdentifierReceiver().equals(key)) {
-                        Log.d("PQP", "adicinou");
                         acceptionAdapter.add(acception);
                     }
                 }
@@ -85,9 +84,9 @@ public class AcceptionActivity extends AppCompatActivity {
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Acception acception = dataSnapshot.getValue(Acception.class);
                     String response = acception.getResponse() ? " accepted!" : " denied!";
-                    Toast.makeText(getApplicationContext(), "Solicitation of " + acception.getIdentifierSender() + response, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Solicitation of " + acception.getRoomName() + response, Toast.LENGTH_LONG).show();
                     if(acception.getResponse()){
-                        treatSolicitationAccepted(acception.getIdentifierSender());
+                        treatSolicitationAccepted(acception.getRoomName());
                     }
                     acceptionAdapter.remove(acception);
                     acceptionAdapter.notifyDataSetChanged();
@@ -111,9 +110,10 @@ public class AcceptionActivity extends AppCompatActivity {
         }
     }
 
-    private void treatSolicitationAccepted(String idSender){
+    private void treatSolicitationAccepted(String roomName){
         Intent intentAcception = new Intent(AcceptionActivity.this, ChatActivity.class);
         intentAcception.putExtra("idReceiver", idReceiver);
+        intentAcception.putExtra("roomName", roomName);
         startActivity(intentAcception);
         finish();
     }

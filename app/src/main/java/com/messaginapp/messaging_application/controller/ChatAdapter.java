@@ -32,7 +32,7 @@ public class ChatAdapter extends ArrayAdapter<Chat> {
         TextView chatTextView = (TextView) convertView.findViewById(R.id.chatTitle);
 
         Chat chat = getItem(position);
-        chatTextView.setText(chat.getIdentifierUser1());
+        chatTextView.setText(chat.getRoomName());
 
         return convertView;
     }
