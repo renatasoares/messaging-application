@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.security.ProviderInstaller;
 import com.messaginapp.messaging_application.R;
 import com.messaginapp.messaging_application.controller.OrbotHelper;
 
@@ -87,7 +88,7 @@ public class OrbotActivity extends AppCompatActivity {
                         public synchronized void onResponse(JSONObject response){
                             try {
                                 if(response.getBoolean("IsTor")){
-                                    Log.d("HAHA", "isTor");
+
                                     Intent intent = new Intent(OrbotActivity.this, ChatActivity.class);
                                     startActivity(intent);
                                     finish();

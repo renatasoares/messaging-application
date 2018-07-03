@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class Chat {
     private String identifierUser1;
     private String identifierUser2;
+    private String roomName;
 
     public String getRoomName() {
         return roomName;
@@ -18,8 +19,6 @@ public class Chat {
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
-
-    private String roomName;
 
     public Chat(){
 

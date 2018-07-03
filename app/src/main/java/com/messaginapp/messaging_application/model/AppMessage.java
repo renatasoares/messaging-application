@@ -43,7 +43,7 @@ public class AppMessage {
         return photoUrl;
     }
 
-    private void setPhotoUrl(String photoUrl) {
+    public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
 

@@ -77,7 +77,8 @@ public class SetUpCardManager {
     }
 
 
-    public static CardManager initializeCardManager(CardCrypto cardCrypto, AccessTokenProvider accessTokenProvider,
+    public static CardManager initializeCardManager(CardCrypto cardCrypto,
+                                                    AccessTokenProvider accessTokenProvider,
                                                      CardVerifier cardVerifier) {
 
         CardManager cardManager = new CardManager(cardCrypto, accessTokenProvider, cardVerifier);

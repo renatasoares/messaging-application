@@ -46,8 +46,6 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
 
     private ZXingScannerView mScannerView;
     private String idSender;
-    DynamoDBMapper dynamoDBMapper;
-
 
     @Override
     public void onCreate(Bundle state) {
@@ -85,6 +83,12 @@ public class QrCodeReaderActivity extends AppCompatActivity implements ZXingScan
     {
         super.onPause();
         stopCamera();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intentBack = new Intent(QrCodeReaderActivity.this, ChatActivity.class);
+        startActivity(intentBack);
     }
 
     @Override

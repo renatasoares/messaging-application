@@ -46,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private ImageView imageView;
-    DynamoDBMapper dynamoDBMapper;
+    private DynamoDBMapper dynamoDBMapper;
     private EditText editText;
     private TextView textView;
     private Button buttonNameChat;
@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         firebaseAuth.getCurrentUser().reload();
 
-        editText.setText(firebaseAuth.getCurrentUser().getDisplayName(),TextView.BufferType.EDITABLE);
+        editText.setText(UUID.randomUUID().toString(),TextView.BufferType.EDITABLE);
 
         buttonNameChat.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -161,5 +161,11 @@ public class ProfileActivity extends AppCompatActivity {
         } catch (WriterException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intentBack = new Intent(ProfileActivity.this, ChatActivity.class);
+        startActivity(intentBack);
     }
 }
