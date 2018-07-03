@@ -14,7 +14,6 @@ public class Acception {
         this.identifierReceiver = identifierReceiver;
     }
 
-
     public Acception() {
 
     }

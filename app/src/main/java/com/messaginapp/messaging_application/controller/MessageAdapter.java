@@ -14,7 +14,7 @@ import com.messaginapp.messaging_application.model.AppMessage;
 
 import java.util.List;
 
-public class MessageAdapter extends ArrayAdapter<com.messaginapp.messaging_application.model.AppMessage> {
+public class MessageAdapter extends ArrayAdapter<AppMessage> {
 
     public MessageAdapter(Context context, int resource, List<AppMessage> objects) {
         super(context, resource, objects);

@@ -117,4 +117,10 @@ public class AcceptionActivity extends AppCompatActivity {
         startActivity(intentAcception);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intentBack = new Intent(AcceptionActivity.this, ChatActivity.class);
+        startActivity(intentBack);
+    }
 }

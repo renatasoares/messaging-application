@@ -201,6 +201,11 @@ public class ChatActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 return true;
+            case R.id.username_menu:
+                Intent intentUsername = new Intent(ChatActivity.this, UsernameActivity.class);
+                startActivity(intentUsername);
+                finish();
+                return true;
             case R.id.acception_menu:
                 Intent acceptionIntent = new Intent(ChatActivity.this, AcceptionActivity.class);
                 startActivity(acceptionIntent);
@@ -245,6 +250,7 @@ public class ChatActivity extends AppCompatActivity {
         chatAdapter.clear();
         removeListener();
     }
+
 
     private class RegisterUser extends AsyncTask<String, Void, String> {
 

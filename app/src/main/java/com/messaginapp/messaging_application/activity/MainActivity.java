@@ -40,8 +40,6 @@ import com.messaginapp.messaging_application.model.AppMessage;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
-
     private ListView messageListView;
     private MessageAdapter messageAdapter;
     private ProgressBar progressBar;
@@ -152,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     option = idUser1;
                 }
-                Log.d("PQP", option + " " + idUser1 + " " + idUser2 + " " + idUser);
                 String encryptedData = cryptoEEHelper.encrypt(firebaseAuth.getCurrentUser().getUid().toString(), messagePlainText, option);
                 AppMessage appMessage = new AppMessage(idUser1, idUser2,encryptedData , firebaseAuth.getCurrentUser().getDisplayName(), null, null, null);
                 databaseReference.push().setValue(appMessage);
@@ -185,7 +182,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        AppMessage imageMessage = new AppMessage(idUser1, idUser2, null, firebaseAuth.getCurrentUser().getDisplayName(), downloadUrl.toString(), null, null);
+                        CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
+
+                        String option = "";
+                        if(firebaseAuth.getCurrentUser().getUid().toString().equals(idUser1)){
+                            option = idUser2;
+                        }else{
+                            option = idUser1;
+                        }
+
+                        String encryptedUrl = cryptoEEHelper.encrypt(firebaseAuth.getCurrentUser().getUid().toString(), downloadUrl.toString(), option);
+                        AppMessage imageMessage = new AppMessage(idUser1, idUser2, null, firebaseAuth.getCurrentUser().getDisplayName(), encryptedUrl, null, null);
 
                         databaseReference.push().setValue(imageMessage);
                     }
@@ -213,12 +220,22 @@ public class MainActivity extends AppCompatActivity {
                     CryptoEEHelper cryptoEEHelper = new CryptoEEHelper();
                     AppMessage message = dataSnapshot.getValue(AppMessage.class);
 
-                    String decryptedMessage= cryptoEEHelper.decrypt(message.getBodyMessage().toString(),
-                            firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
+                    if(message.getBodyMessage() == null){
+                        String decryptedUrl = cryptoEEHelper.decrypt(message.getPhotoUrl().toString(),
+                                firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
 
-                    if(message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
-                        message.setBodyMessage(decryptedMessage);
-                        messageAdapter.add(message);
+                        if (message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
+                            message.setPhotoUrl(decryptedUrl);
+                            messageAdapter.add(message);
+                        }
+                    }else {
+                        String decryptedMessage = cryptoEEHelper.decrypt(message.getBodyMessage().toString(),
+                                firebaseAuth.getCurrentUser().getUid().toString(), getApplicationContext());
+
+                        if (message.getIdUser1().equals(idUser) || message.getIdUser2().equals(idUser)) {
+                            message.setBodyMessage(decryptedMessage);
+                            messageAdapter.add(message);
+                        }
                     }
                 }
 
@@ -243,5 +260,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intentBack = new Intent(MainActivity.this, ChatActivity.class);
+        startActivity(intentBack);
+    }
 
 }

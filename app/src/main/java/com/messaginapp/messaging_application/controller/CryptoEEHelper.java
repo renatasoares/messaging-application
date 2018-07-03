@@ -37,7 +37,7 @@ public class CryptoEEHelper {
     private static CardManager cardManager;
 
 
-    public static  synchronized CardManager getCardManager(String userIdentifier){
+    public static synchronized CardManager getCardManager(String userIdentifier){
         if(cardManager == null){
             SetUpCardManager setUp = new SetUpCardManager();
             CardCrypto cardCrypto = setUp.setupCrypto();
@@ -46,7 +46,7 @@ public class CryptoEEHelper {
         }
         return cardManager;
     }
-    public  static synchronized Context getContextInstance(Context argContext) {
+    public static synchronized Context getContextInstance(Context argContext) {
         if(context == null){
             context = argContext;
         }
@@ -106,8 +106,6 @@ public class CryptoEEHelper {
         try {
             List<Card> cardsSender = getCardManager(currentUser).searchCards(currentUser);
             List<Card> cardsReceiver = getCardManager(currentUser).searchCards(receiver);
-
-            Log.d("PQP", currentUser + " "+ receiver);
 
             List<VirgilPublicKey> senderRelevantCardsPublicKeys = new ArrayList<>();
             for (Card card : cardsSender) {

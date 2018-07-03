@@ -48,7 +48,8 @@
         <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.QrCodeReaderActivity" />
         <activity android:name=".activity.AcceptionActivity" />
-        <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.ChatActivity" />
+        <activity android:name=".activity.UsernameActivity"></activity>
     </application>
 
 </manifest>
